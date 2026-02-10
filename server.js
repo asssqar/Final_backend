@@ -12,6 +12,16 @@ const User = require('./models/User');
 
 dotenv.config();
 
+const uri = process.env.MONGODB_URI || process.env.MONGO_URI;
+if (!uri) {
+  console.error('Missing MONGODB_URI or MONGO_URI. Set it in Render Dashboard → Environment.');
+  process.exit(1);
+}
+if (!process.env.JWT_SECRET) {
+  console.error('Missing JWT_SECRET. Set it in Render Dashboard → Environment.');
+  process.exit(1);
+}
+
 const app = express();
 
 app.set('view engine', 'ejs');

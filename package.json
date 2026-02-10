@@ -1,3 +1,4 @@
+
 {
   "name": "it-books-library",
   "version": "1.0.0",
@@ -11,6 +12,7 @@
   "keywords": ["books", "library", "express", "mongodb", "ejs"],
   "author": "",
   "license": "ISC",
+  "engines": { "node": "20" },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
