@@ -1,30 +1,42 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-// схема книги
-const bookSchema = new mongoose.Schema(
+const BookSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
-      trim: true
+      required: [true, 'Title is required'],
+      trim: true,
     },
     author: {
       type: String,
-      required: true,
-      trim: true
+      required: [true, 'Author is required'],
+      trim: true,
+    },
+    description: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    tags: {
+      type: [String],
+      default: [],
     },
     year: {
       type: Number,
-      required: true
+      default: null,
     },
-    genre: {
+    pdfPath: {
       type: String,
-      default: 'unknown'
-    }
+      required: [true, 'PDF file is required'],
+      trim: true,
+    },
+    coverImageUrl: {
+      type: String,
+      default: '',
+      trim: true,
+    },
   },
-  {
-    timestamps: true // mongoose сам создаёт createdAt и updatedAt
-  }
-)
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('Book', bookSchema)
+module.exports = mongoose.model('Book', BookSchema);

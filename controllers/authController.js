@@ -1,79 +1,86 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { COOKIE_NAME } = require('../middlewares/authMiddleware');
 
-// Generate JWT
+const JWT_EXPIRES = '7d';
+
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
-    });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRES });
 };
 
-// @desc    Register new user
-// @route   POST /api/auth/register
-// @access  Public
-exports.register = async (req, res) => {
-    const { username, email, password, role } = req.body;
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  path: '/',
+};
 
-    try {
-        const user = await User.create({
-            username,
-            email,
-            password,
-            role
-        });
-
-        res.status(201).json({
-            success: true,
-            token: generateToken(user._id),
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+exports.register = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(400).json({ success: false, error: 'Name, email and password are required' });
+      }
+      return res.redirect('/register?error=' + encodeURIComponent('Name, email and password are required'));
     }
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(400).json({ success: false, error: 'Email already registered' });
+      }
+      return res.redirect('/register?error=' + encodeURIComponent('Email already registered'));
+    }
+    const user = await User.create({ name, email: email.toLowerCase(), password, role: 'user' });
+    const token = generateToken(user._id);
+    res.cookie(COOKIE_NAME, token, cookieOptions);
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+      return res.status(201).json({
+        success: true,
+        user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      });
+    }
+    res.redirect('/');
+  } catch (err) {
+    next(err);
+  }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
+  try {
     const { email, password } = req.body;
-
-    try {
-        if (!email || !password) {
-            return res.status(400).json({ success: false, error: 'Please provide an email and password' });
-        }
-
-        // Check for user
-        const user = await User.findOne({ email }).select('+password');
-
-        if (!user) {
-            return res.status(401).json({ success: false, error: 'Invalid credentials' });
-        }
-
-        // Check if password matches
-        const isMatch = await user.matchPassword(password);
-
-        if (!isMatch) {
-            return res.status(401).json({ success: false, error: 'Invalid credentials' });
-        }
-
-        res.json({
-            success: true,
-            token: generateToken(user._id),
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                role: user.role
-            }
-        });
-
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+    if (!email || !password) {
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(400).json({ success: false, error: 'Email and password are required' });
+      }
+      return res.redirect('/login?error=' + encodeURIComponent('Email and password are required'));
     }
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    if (!user || !(await user.matchPassword(password))) {
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(401).json({ success: false, error: 'Invalid credentials' });
+      }
+      return res.redirect('/login?error=' + encodeURIComponent('Invalid email or password'));
+    }
+    const token = generateToken(user._id);
+    res.cookie(COOKIE_NAME, token, cookieOptions);
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+      return res.json({
+        success: true,
+        user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      });
+    }
+    res.redirect(req.query.redirect || '/');
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie(COOKIE_NAME, { path: '/' });
+  if (req.xhr || req.headers.accept?.includes('application/json')) {
+    return res.json({ success: true });
+  }
+  res.redirect('/');
 };

@@ -1,0 +1,7 @@
+<%- include('partials/header', { user: typeof user !== 'undefined' ? user : null, title: 'Error' }) %>
+<section class="error-page">
+  <h1>Something went wrong</h1>
+  <p><%= typeof message !== 'undefined' ? message : 'Server error.' %></p>
+  <a href="/" class="btn">Go home</a>
+</section>
+<%- include('partials/footer') %>

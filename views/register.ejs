@@ -1,0 +1,18 @@
+<%- include('partials/header', { user: typeof user !== 'undefined' ? user : null }) %>
+<section class="auth-page">
+  <h1>Create account</h1>
+  <% if (typeof error !== 'undefined' && error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+  <form action="/register" method="post" class="auth-form">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required autocomplete="name" />
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required autocomplete="email" />
+    <label for="password">Password (min 6)</label>
+    <input type="password" id="password" name="password" required minlength="6" autocomplete="new-password" />
+    <button type="submit" class="btn">Register</button>
+  </form>
+  <p class="auth-link"><a href="/login">Already have an account? Log in</a></p>
+</section>
+<%- include('partials/footer') %>

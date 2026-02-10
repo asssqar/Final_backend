@@ -1,0 +1,25 @@
+<%- include('partials/header', { user: typeof user !== 'undefined' ? user : null, title: book.title }) %>
+<section class="book-detail">
+  <% if (book.coverImageUrl) { %>
+    <img src="<%= book.coverImageUrl %>" alt="" class="book-detail-cover" />
+  <% } else { %>
+    <div class="book-detail-cover placeholder">📖</div>
+  <% } %>
+  <div class="book-detail-info">
+    <h1><%= book.title %></h1>
+    <p class="author">by <%= book.author %></p>
+    <% if (book.year) { %><p class="meta">Year: <%= book.year %></p><% } %>
+    <% if (book.tags && book.tags.length) { %>
+      <p class="tags">Tags: <%= book.tags.join(', ') %></p>
+    <% } %>
+    <% if (book.description) { %>
+      <div class="description"><%= book.description %></div>
+    <% } %>
+    <% if (typeof user !== 'undefined' && user) { %>
+      <a href="/books/<%= book._id %>/download" class="btn btn-primary">Download PDF</a>
+    <% } else { %>
+      <p class="hint"><a href="/login">Log in</a> to download the PDF.</p>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

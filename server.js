@@ -1,44 +1,78 @@
-const express = require('express')
-const dotenv = require('dotenv')
-const cors = require('cors')
+const path = require('path');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
 
-const connectDB = require('./config/db')
-const bookRoutes = require('./routes/books')
-const authRoutes = require('./routes/auth')
-const reviewRoutes = require('./routes/reviews')
-const errorHandler = require('./middlewares/errorHandler')
+const connectDB = require('./config/db');
+const { optionalAuth } = require('./middlewares/authMiddleware');
+const errorHandler = require('./middlewares/errorHandler');
+const routes = require('./routes');
+const apiRoutes = require('./routes/api');
+const User = require('./models/User');
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
 
-// парсим json из запросов
-app.use(express.json())
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// разрешаем запросы с фронта
-app.use(cors())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// подключаем базу
-connectDB()
 
-// тут делается отдача файлов из папки public
-app.use(express.static('public'))
+async function seedAdmin() {
+  const email = process.env.ADMIN_SEED_EMAIL;
+  const password = process.env.ADMIN_SEED_PASSWORD;
+  if (!email || !password) return;
+  try {
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      if (existing.role !== 'admin') {
+        existing.role = 'admin';
+        await existing.save();
+        console.log('Existing user promoted to admin:', email);
+      }
+      return;
+    }
+    await User.create({
+      name: 'Admin',
+      email: email.toLowerCase(),
+      password,
+      role: 'admin',
+    });
+    console.log('Admin user created:', email);
+  } catch (err) {
+    console.error('Admin seed error:', err.message);
+  }
+}
 
-// api для книг
-app.use('/api/books', bookRoutes)
-app.use('/api/auth', authRoutes)
-app.use('/api/reviews', reviewRoutes)
+app.use(optionalAuth);
+app.use(routes);
+app.use('/api', apiRoutes);
+app.use(express.static(path.join(__dirname, 'public')));
 
-// корневой маршрут для фронта
-app.get('/', (req, res) => {
-  // отдаём index.html из папки public
-  res.sendFile(__dirname + '/public/index.html')
-})
+app.use((req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ success: false, error: 'Not found' });
+  }
+  res.status(404).render('404', { user: req.user || null });
+});
 
-// обработка ошибок
-app.use(errorHandler)
+app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
-})
+const PORT = process.env.PORT || 5000;
+
+async function start() {
+  await connectDB();
+  await seedAdmin();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+start().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= typeof title !== 'undefined' ? title + ' — ' : '' %>IT Books</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="brand">IT Books</a>
+      <form class="search-form" action="/" method="get">
+        <input type="search" name="q" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" placeholder="Search by title or author" class="search-input" />
+        <button type="submit" class="btn btn-sm">Search</button>
+      </form>
+      <div class="nav-right">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="nav-user"><%= user.name %></span>
+          <% if (user.role === 'admin') { %>
+            <a href="/admin" class="btn btn-sm btn-outline">Admin Panel</a>
+          <% } %>
+          <form action="/logout" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-sm btn-ghost">Logout</button>
+          </form>
+        <% } else { %>
+          <a href="/login" class="btn btn-sm btn-outline">Login</a>
+          <a href="/register" class="btn btn-sm">Register</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+  <main class="main">

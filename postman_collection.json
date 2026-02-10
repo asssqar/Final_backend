@@ -1,0 +1,115 @@
+{
+  "info": {
+    "name": "IT Books Library API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"your-admin-password\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "Get all books",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/books"
+          }
+        },
+        {
+          "name": "Search books",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/books?q=javascript"
+          }
+        },
+        {
+          "name": "Get book by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          }
+        },
+        {
+          "name": "Create book (admin)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "title", "value": "Clean Code"},
+                {"key": "author", "value": "Robert C. Martin"},
+                {"key": "description", "value": "A Handbook of Agile Software Craftsmanship"},
+                {"key": "tags", "value": "programming, clean code"},
+                {"key": "year", "value": "2008"},
+                {"key": "pdf", "type": "file", "src": ""}
+              ]
+            },
+            "url": "{{baseUrl}}/api/books"
+          }
+        },
+        {
+          "name": "Update book (admin)",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "title", "value": "Updated Title"},
+                {"key": "author", "value": "Author Name"},
+                {"key": "pdf", "type": "file", "src": ""}
+              ]
+            },
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          }
+        },
+        {
+          "name": "Delete book (admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:5000"},
+    {"key": "bookId", "value": ""}
+  ]
+}

@@ -1,0 +1,31 @@
+<%- include('partials/header', { user: typeof user !== 'undefined' ? user : null, searchQuery: typeof searchQuery !== 'undefined' ? searchQuery : '' }) %>
+<section class="hero">
+  <h1>IT Books Library</h1>
+  <p class="tagline">"The only way to learn a new programming language is by writing programs in it." — Dennis Ritchie</p>
+</section>
+<section class="books-section">
+  <h2>Books</h2>
+  <% if (books && books.length) { %>
+    <ul class="book-grid">
+      <% books.forEach(function(book) { %>
+        <li class="book-card">
+          <% if (book.coverImageUrl) { %>
+            <img src="<%= book.coverImageUrl %>" alt="" class="book-cover" />
+          <% } else { %>
+            <div class="book-cover placeholder">📖</div>
+          <% } %>
+          <div class="book-info">
+            <h3><a href="/books/<%= book._id %>"><%= book.title %></a></h3>
+            <p class="author"><%= book.author %></p>
+            <% if (book.tags && book.tags.length) { %>
+              <p class="tags"><%= book.tags.join(', ') %></p>
+            <% } %>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p class="empty">No books found.<% if (searchQuery) { %> Try a different search.<% } %></p>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,26 @@
+<%- include('../partials/header', { user: typeof user !== 'undefined' ? user : null, title: book ? 'Edit book' : 'Add book' }) %>
+<section class="admin-page">
+  <h1><%= book ? 'Edit book' : 'Add new book' %></h1>
+  <% if (typeof error !== 'undefined' && error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+  <form action="<%= book ? '/admin/books/' + book._id : '/admin/books' %>" method="post" enctype="multipart/form-data" class="book-form">
+    <label for="title">Title *</label>
+    <input type="text" id="title" name="title" value="<%= book ? book.title : '' %>" required />
+    <label for="author">Author *</label>
+    <input type="text" id="author" name="author" value="<%= book ? book.author : '' %>" required />
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4"><%= book ? book.description : '' %></textarea>
+    <label for="tags">Tags (comma-separated)</label>
+    <input type="text" id="tags" name="tags" value="<%= book && book.tags && book.tags.length ? book.tags.join(', ') : '' %>" placeholder="e.g. JavaScript, Node.js" />
+    <label for="year">Year</label>
+    <input type="number" id="year" name="year" value="<%= book && book.year ? book.year : '' %>" min="1900" max="2100" />
+    <label for="coverImageUrl">Cover image URL</label>
+    <input type="url" id="coverImageUrl" name="coverImageUrl" value="<%= book ? book.coverImageUrl || '' : '' %>" placeholder="https://..." />
+    <label for="pdf">PDF file <%= book ? '(leave empty to keep current)' : '*' %></label>
+    <input type="file" id="pdf" name="pdf" accept="application/pdf" <%= book ? '' : 'required' %> />
+    <button type="submit" class="btn btn-primary"><%= book ? 'Update' : 'Add book' %></button>
+    <a href="/admin" class="btn btn-ghost">Cancel</a>
+  </form>
+</section>
+<%- include('../partials/footer') %>

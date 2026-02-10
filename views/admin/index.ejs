@@ -1,0 +1,35 @@
+<%- include('../partials/header', { user: typeof user !== 'undefined' ? user : null }) %>
+<section class="admin-page">
+  <h1>Admin — Books</h1>
+  <p><a href="/admin/books/new" class="btn">Add new book</a></p>
+  <% if (books && books.length) { %>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Year</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% books.forEach(function(book) { %>
+          <tr>
+            <td><a href="/books/<%= book._id %>"><%= book.title %></a></td>
+            <td><%= book.author %></td>
+            <td><%= book.year || '—' %></td>
+            <td>
+              <a href="/admin/books/<%= book._id %>/edit" class="btn btn-sm btn-outline">Edit</a>
+              <form action="/admin/books/<%= book._id %>/delete" method="post" style="display:inline;" onsubmit="return confirm('Delete this book?');">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p class="empty">No books yet. <a href="/admin/books/new">Add one</a>.</p>
+  <% } %>
+</section>
+<%- include('../partials/footer') %>

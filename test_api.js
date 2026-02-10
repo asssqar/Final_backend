@@ -1,6 +1,3 @@
-// const fetch = require('node-fetch'); // Using native fetch or ensure node-fetch is installed
-
-
 const BASE_URL = 'http://127.0.0.1:5000/api';
 
 async function test() {
@@ -23,7 +20,6 @@ async function test() {
     const adminToken = data.token;
 
     if (!adminToken && res.status !== 201) {
-        // If already exists, try login
         console.log('Admin probably exists, logging in...');
         res = await fetch(`${BASE_URL}/auth/login`, {
             method: 'POST',
