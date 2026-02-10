@@ -12,6 +12,7 @@ The project was built as a production-ready application using a simple, maintain
 <img width="1858" height="975" alt="{C0506AB6-29BD-411A-9630-9A48E129B10F}" src="https://github.com/user-attachments/assets/12bba525-c27a-451e-80ac-48783f00009b" />
 <img width="1856" height="975" alt="{9EF16AD8-9D9F-4554-97C0-62DC413E40C7}" src="https://github.com/user-attachments/assets/bd897449-9b4b-46b4-80e4-8d415db17872" />
 <img width="1858" height="973" alt="{84415CDB-2A33-4E3E-BD58-B9E043786718}" src="https://github.com/user-attachments/assets/14f9a263-0cc7-4fc5-9d06-b0beab6d39c9" />
+
 ## 2. Goals and Requirements
 
 - Provide a clean, usable interface for browsing and searching books by title or author.
