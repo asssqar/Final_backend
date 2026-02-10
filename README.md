@@ -7,7 +7,11 @@
 The project was built as a production-ready application using a simple, maintainable stack: Node.js with Express on the backend, MongoDB with Mongoose for the database, and EJS for server-rendered pages. Authentication is implemented with JWT (stored in httpOnly cookies) and bcrypt for password hashing. File uploads are handled with Multer, with PDFs stored on the server filesystem.
 
 ---
-
+<img width="1857" height="973" alt="{3D724432-8C06-402D-B4FD-F449215E8198}" src="https://github.com/user-attachments/assets/bc3966ea-d94c-491a-8aef-858d0556c94b" />
+<img width="1856" height="972" alt="{19535041-6545-4C1E-BD8E-D00B2D0011CD}" src="https://github.com/user-attachments/assets/ea623448-ea73-4694-a8cb-b419a9117be8" />
+<img width="1858" height="975" alt="{C0506AB6-29BD-411A-9630-9A48E129B10F}" src="https://github.com/user-attachments/assets/12bba525-c27a-451e-80ac-48783f00009b" />
+<img width="1856" height="975" alt="{9EF16AD8-9D9F-4554-97C0-62DC413E40C7}" src="https://github.com/user-attachments/assets/bd897449-9b4b-46b4-80e4-8d415db17872" />
+<img width="1858" height="973" alt="{84415CDB-2A33-4E3E-BD58-B9E043786718}" src="https://github.com/user-attachments/assets/14f9a263-0cc7-4fc5-9d06-b0beab6d39c9" />
 ## 2. Goals and Requirements
 
 - Provide a clean, usable interface for browsing and searching books by title or author.
@@ -213,6 +217,7 @@ Then open `http://localhost:5000` (or the configured port).
 Set env vars in the dashboard; build command `npm install`, start command `npm start`. Note: uploaded PDFs are stored on the filesystem; for persistent storage across deploys, consider a persistent disk or object storage (e.g. S3).
 
 ---
+
 
 ## 11. Security and Validation
 
